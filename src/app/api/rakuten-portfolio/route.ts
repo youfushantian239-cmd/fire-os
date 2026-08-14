@@ -55,6 +55,15 @@ export async function GET(request: Request) {
   try {
     const origin = new URL(request.url).origin;
 
+    const authorization =
+      request.headers.get("authorization");
+
+    const internalHeaders: HeadersInit = {};
+
+    if (authorization) {
+      internalHeaders.Authorization = authorization;
+    }
+
     const [
       fundResponse,
       usStockResponse,
@@ -63,18 +72,22 @@ export async function GET(request: Request) {
     ] = await Promise.all([
       fetch(`${origin}/api/rakuten-funds`, {
         cache: "no-store",
+        headers: internalHeaders,
       }),
 
       fetch(`${origin}/api/rakuten-us-stocks`, {
         cache: "no-store",
+        headers: internalHeaders,
       }),
 
       fetch(`${origin}/api/rakuten-jp-stocks`, {
         cache: "no-store",
+        headers: internalHeaders,
       }),
 
       fetch(`${origin}/api/rakuten-usd-assets`, {
         cache: "no-store",
+        headers: internalHeaders,
       }),
     ]);
 
